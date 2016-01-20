@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="assets/app.css">
+    <script>
+        // Borrowed from https://github.com/GoogleChrome/samples/blob/gh-pages/service-worker/registration-events/index.html#L45
+        // Service workers require HTTPS (http://goo.gl/lq4gCo). If we're running on a real web server
+        // (as opposed to localhost on a custom port, which is whitelisted), then change the protocol to HTTPS.
+        if ((!location.port || location.port == "80") && location.protocol != 'https:') {
+            location.protocol = 'https:';
+        }
+    </script>
 </head>
 <body>
 <header>

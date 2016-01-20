@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Service Worker Introduction</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
+  <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+  <h1><a href="../">Service Worker Introduction</a></h1>
+  <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Register service worker</h2>
+<p>To use a service worker you need to <a href="https://www.w3.org/TR/service-workers/#navigator-service-worker-register">register</a> it within a page.</p>
+
+<h3>Code</h3>
+<pre>
+// in page.html
+if ('serviceWorker' in navigator) {
+  <strong>navigator.serviceWorker.register('sw.js', { scope: './' })</strong>
+    .then(reg => console.info('registered sw', reg))
+    .catch(err => console.error('error registering sw', err));
+}
+</pre>
+<button type="button" id="toggleCode">show/hide full ES5 code</button>
+<pre><code id="codeCopy" hidden></code></pre>
+
+<p>The highest scope a service worker can have is the origin its registered from.<br>
+An origin can have many service workers as long as they have different scopes.</p>
+<p>Note: You can force an error, by registering a non-existing <code>sw-fake.js</code>.<p>
+
+<h3>Output</h3>
+<pre id="output"></pre>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js', { scope: './' })
+    .then(function(reg) {
+      app.output('registered sw (see console)');
+      console.info('registered sw', reg);
+    })
+    .catch(function(err) {
+      app.output('error registering sw (see console)');
+      console.error('error registering sw', err);
+    });
+} else {
+  app.output('ServiceWorker is not supported');
+}
+</script>
+</body>
+</html>

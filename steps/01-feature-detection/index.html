@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Service Worker Introduction</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
+  <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+  <h1><a href="../">Service Worker Introduction</a></h1>
+  <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Feature detection</h2>
+<p>Use the ServiceWorker as a progressive enhancement. Meaning only try to use one after you've tested it's available as a feature.</p>
+
+<h3>Code</h3>
+<pre>
+// in page.html
+if (<strong>'serviceWorker' in navigator</strong>) {
+  console.log('ServiceWorker is supported. Let\'s use it.');
+} else {
+  console.log('ServiceWorker is not supported');
+}
+</pre>
+<button type="button" id="toggleCode">show/hide full ES5 code</button>
+<pre><code id="codeCopy" hidden></code></pre>
+
+<h3>Output</h3>
+<pre id="output"></pre>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+if ('serviceWorker' in navigator) {
+  app.output('ServiceWorker is supported. Let\'s use it.');
+} else {
+  app.output('ServiceWorker is not supported');
+}
+</script>
+</body>
+</html>

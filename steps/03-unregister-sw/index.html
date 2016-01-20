@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Service Worker Introduction</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
+  <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+  <h1><a href="../">Service Worker Introduction</a></h1>
+  <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Unregister service worker</h2>
+<p>To remove a service worker you need to <a href="https://www.w3.org/TR/service-workers/#navigator-service-worker-unregister">unregister</a> it.</p>
+
+<h3>Code</h3>
+<pre>
+// in page.html
+navigator.serviceWorker.getRegistration('./')
+  .then(reg => {
+    <strong>reg.unregister();</strong>
+    console.log('unregistered sw');
+  });
+</pre>
+<button type="button" id="toggleCode">show/hide full ES5 code</button>
+<pre><code id="codeCopy" hidden></code></pre>
+
+<p>Note: The latest version of the service worker will still be used on all pages until they are <code>unload</code>ed. Meaning only subsequent page loads are affected.</p>
+
+<h3>Demo</h3>
+<button type="button" id="register">register</button>
+<button type="button" id="unregister">unregister</button>
+
+<h3>Output</h3>
+<pre id="output"></pre>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+if ('serviceWorker' in navigator) {
+
+  document.getElementById('register').onclick = function() {
+    navigator.serviceWorker.register('sw.js', { scope: './' })
+      .then(function(reg) {
+        app.output('registered sw (see console)');
+        console.info('registered sw', reg);
+      })
+      .catch(function(err) {
+        console.error('error registering sw', err);
+      });
+  };
+
+  document.getElementById('unregister').onclick = function() {
+    navigator.serviceWorker.getRegistration('./')
+      .then(function(reg) {
+        reg.unregister();
+        app.output('unregistered sw');
+      })
+      .catch(function(err) {
+        app.output('error unregistering sw (see console)');
+        console.error('error unregistering sw', err);
+      });
+  };
+
+} else {
+  app.output('ServiceWorker is not supported');
+}
+</script>
+</body>
+</html>

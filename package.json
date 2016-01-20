@@ -1,0 +1,11 @@
+{
+  "name": "serviceworker-introduction",
+  "description": "Step-by-step introduction to the Service Worker API.",
+  "private": true,
+  "scripts": {
+    "start": "http-server 'steps/' -c-1 -o -p 46876"
+  },
+  "devDependencies": {
+    "http-server": "0.8.5"
+  }
+}

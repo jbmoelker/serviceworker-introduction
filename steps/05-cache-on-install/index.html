@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Service Worker Introduction</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
+  <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+  <h1><a href="../">Service Worker Introduction</a></h1>
+  <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Cache on install</h2>
+<p>...</p>
+
+<h3>Code</h3>
+<pre>
+// in sw.js
+this.addEventListener('install', event => {
+  event.waitUntil(
+    <strong>caches.open('app-name-v1')</strong>.then(cache => {
+      return <strong>cache.addAll</strong>([
+        './',
+        '../assets/app.css',
+        '../assets/app.js'
+      ]);
+    })
+  );
+});
+</pre>
+<button type="button" id="toggleCode">show/hide full ES5 code</button>
+<pre><code id="codeCopy" hidden></code></pre>
+
+<p>...</p>
+
+<h3>Output</h3>
+<pre id="output"></pre>
+<button type="button" id="resetSw">Reset</button>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js', { scope: './' })
+    .then(function(reg) {
+      app.output('registered sw (see console)');
+      console.info('registered sw', reg);
+    })
+    .catch(function(err) {
+      app.output('error registering sw (see console)');
+      console.error('error registering sw', err);
+    });
+} else {
+  app.output('ServiceWorker is not supported');
+}
+</script>
+</body>
+</html>

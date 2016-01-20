@@ -1,0 +1,37 @@
+body {
+  font-family: sans-serif;
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 1em;
+}
+
+header {
+  border-bottom: 1px solid black;
+}
+header:before {
+  content: "SW";
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 40px;
+  height: 40px;
+  float: left;
+  background-color: #F1DC3F;
+  margin: 2px 10px 0 0;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 6px;
+}
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+header p {
+  margin: .5rem 0;
+  font-size: .9rem;
+}
+
+pre {
+  max-width: 100%;
+  overflow-x: scroll;
+}

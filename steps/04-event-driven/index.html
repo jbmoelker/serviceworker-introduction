@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Service Worker Introduction</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
+  <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+  <h1><a href="../">Service Worker Introduction</a></h1>
+  <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Event Driven</h2>
+<p>The service worker can listen to and handle <a href="https://www.w3.org/TR/service-workers/#dfn-lifecycle-events">lifecycle events</a> - install and activate - and <a href="https://www.w3.org/TR/service-workers/#dfn-functional-events">functional events</a> like - fetch and push.</p>
+
+<h3>Code</h3>
+<pre>
+// in sw.js
+console.log('started ServiceWorker');
+this.addEventListener(<strong>'install'</strong>, event => console.log('installed', event));
+this.addEventListener(<strong>'activate'</strong>, event => console.log('activated', event));
+this.addEventListener(<strong>'fetch'</strong>, event => console.log('fetching', event));
+this.addEventListener(<strong>'push'</strong>, event => console.log('pushed', event));
+</pre>
+<button type="button" id="toggleCode">show/hide full ES5 code</button>
+<pre><code id="codeCopy" hidden></code></pre>
+
+<p>Use <a href="chrome://serviceworker-internals/">chrome://serviceworker-internals/</a> and <a href="chrome://inspect/#service-workers">chrome://inspect/#service-workers</a> to open a console for <code>sw.js</code> and see what the events look like.</p>
+
+<h3>Output</h3>
+<pre id="output"></pre>
+<button type="button" id="resetSw">Reset</button>
+
+<h3>The <code>install</code> event</h3>
+<p>The <code>install</code> event is fired once, when you register this version of sw.js for the first time. If sw.js changes even a single byte it’s called again. Use this event to setup whatever needs to be prepared before the other events are handled.</p>
+<pre>
+// in sw.js
+this.addEventListener(<strong>'install'</strong>, event => {
+  console.log('installed', event);
+});
+// alternatively, if you only need to bind it once:
+this<strong>.oninstall</strong> = event => { 
+  console.log('installed', event);
+};
+</pre>
+
+<h3>The <code>activate</code> event</h3>
+<p>The <code>activate</code> event is fired once, when there’s a new version of sw.js installed and there’s no previous version running in another tab or window. So you’d typically use this event for deleting or migrating remainders of the previous version.</p>
+<pre>
+// in sw.js
+this.addEventListener(<strong>'activate'</strong>, event => {
+  console.log('activated', event);
+});
+// alternatively, if you only need to bind it once:
+this<strong>.onactivate</strong> = event => { 
+  console.log('activated', event);
+};
+</pre>
+
+<h3>The <code>fetch</code> event</h3>
+<p>The <code>fetch</code> event is fired on every request the page makes - within the scope you registered the ServiceWorker with.</p>
+<pre>
+// in sw.js
+this.addEventListener(<strong>'fetch'</strong>, event => {
+  console.log('fetching', event, event.request);
+});
+// alternatively, if you only need to bind it once:
+this<strong>.onfetch</strong> = event => { 
+  console.log('fetching', event, event.request);
+};
+</pre>
+
+<h3>Wait for it…</h3>
+<p>If something needs to happen during a specific lifecycle event (<code>install</code> or <code>activate</code>) you can extend the lifetime of the event using <a href="https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/waitUntil"><code>waitUntil</code></a>.</p>
+<pre>
+this.addEventListener('lifecycleEventName', event => {
+  <strong>event.waitUntil</strong>(() => {
+    return new Promise((resolve, reject) {
+      setTimeout(() => resolve(), 1000);
+    });
+  });
+});
+</pre>
+<p>The lifetime will be extended until the <code>Promise</code> resolves.</p>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js', { scope: './' })
+    .then(function(reg) {
+      app.output('registered sw (see console)');
+      console.info('registered sw', reg);
+    })
+    .catch(function(err) {
+      app.output('error registering sw (see console)');
+      console.error('error registering sw', err);
+    });
+} else {
+  app.output('ServiceWorker is not supported');
+}
+</script>
+</body>
+</html>

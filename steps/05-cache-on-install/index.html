@@ -14,7 +14,7 @@
 </header>
 
 <h2>Cache on install</h2>
-<p>...</p>
+<p>For an offline first approach, the <code>install</code> phase is ideal to fetch and <code>cache</code> a main (catch all) page and static assets, to be used when offline.</p>
 
 <h3>Code</h3>
 <pre>
@@ -31,27 +31,26 @@ this.addEventListener('install', event => {
   );
 });
 </pre>
-<button type="button" id="toggleCode">show/hide full ES5 code</button>
+<!--
+<button type="button" id="toggleCode">show/hide full code (ES5)</button>
 <pre><code id="codeCopy" hidden></code></pre>
+-->
+<button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
+<pre><code id="swCodeCopy" hidden></code></pre>
 
-<p>...</p>
+<p>Caches are shared across the origin, so it's important to give them a distinctive name. See also <a href="../08-clear-cache-on-activate/">clear cache on activate</a>.</p>
+<p>The <code>cache.addAll</code> method stores the <code>Response</code>s by <code>Request</code> in the <code>CacheStorage</code>, so we can use these later.</p>
+<p>You can view the CacheStorage via Developer Tools > Resources > Cache Storage.</p>
 
 <h3>Output</h3>
 <pre id="output"></pre>
-<button type="button" id="resetSw">Reset</button>
+<a href="../#reset">Reset all</a>
 
 <script src="../assets/app.js"></script>
 <script id="codeSource">
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js', { scope: './' })
-    .then(function(reg) {
-      app.output('registered sw (see console)');
-      console.info('registered sw', reg);
-    })
-    .catch(function(err) {
-      app.output('error registering sw (see console)');
-      console.error('error registering sw', err);
-    });
+      .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); });
 } else {
   app.output('ServiceWorker is not supported');
 }

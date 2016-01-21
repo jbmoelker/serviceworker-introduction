@@ -9,8 +9,8 @@ this.addEventListener('activate', function(event) {
 });
 
 this.addEventListener('fetch', function(event) { 
-	console.log('fetching', event)
+	console.log('fetching', event);
 });
 this.addEventListener('push', function(event) {
-	console.log('pushed', event)
+	console.log('pushed', event);
 });

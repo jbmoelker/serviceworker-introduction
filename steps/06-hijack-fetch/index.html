@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Service Worker Introduction</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+    <h1><a href="../">Service Worker Introduction</a></h1>
+    <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Hijack fetch</h2>
+<p>The service worker can intercept requests and manipulate them. You can also modify the responses or craft new ones, using <code>event.respondWith</code>.</p>
+
+<h3>Code</h3>
+<pre>
+// in sw.js
+this.addEventListener('fetch', event => {
+  <strong>event.respondWith</strong>(new Response('hijacked'));
+});
+</pre>
+<button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
+<pre><code id="swCodeCopy" hidden></code></pre>
+
+<p>The Response constructor accepts <a href="https://developer.mozilla.org/en-US/docs/Web/API/Response/Response#Syntax">additional option</a>, like setting <code>{'Content-Type':'text/html'}</code> headers.</p>
+
+<h3>Output</h3>
+<pre id="output"></pre>
+<button type="button" id="resetSw">Reset</button>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js', { scope: './' })
+            .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); });
+    } else {
+        app.output('ServiceWorker is not supported');
+    }
+</script>
+</body>
+</html>

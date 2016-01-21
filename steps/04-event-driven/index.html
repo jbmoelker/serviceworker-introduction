@@ -25,14 +25,17 @@ this.addEventListener(<strong>'activate'</strong>, event => console.log('activat
 this.addEventListener(<strong>'fetch'</strong>, event => console.log('fetching', event));
 this.addEventListener(<strong>'push'</strong>, event => console.log('pushed', event));
 </pre>
+<!--
 <button type="button" id="toggleCode">show/hide full ES5 code</button>
 <pre><code id="codeCopy" hidden></code></pre>
+-->
+<button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
+<pre><code id="swCodeCopy" hidden></code></pre>
 
 <p>Use <a href="chrome://serviceworker-internals/">chrome://serviceworker-internals/</a> and <a href="chrome://inspect/#service-workers">chrome://inspect/#service-workers</a> to open a console for <code>sw.js</code> and see what the events look like.</p>
 
 <h3>Output</h3>
 <pre id="output"></pre>
-<button type="button" id="resetSw">Reset</button>
 
 <h3>The <code>install</code> event</h3>
 <p>The <code>install</code> event is fired once, when you register this version of sw.js for the first time. If sw.js changes even a single byte it’s called again. Use this event to setup whatever needs to be prepared before the other events are handled.</p>

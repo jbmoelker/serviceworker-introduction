@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Service Worker Introduction</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+    <h1><a href="../">Service Worker Introduction</a></h1>
+    <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Serve from cache</h2>
+<p>When a request is already cached (eg. during install) we can serve it directly.
+    If the response is not cached, we can <code>fetch</code> it like the browser normally would.</p>
+<p>With this setup we can render our page even when we are offline. Try it (turn off network / shut down server).</p>
+
+<h3>Code</h3>
+<pre>
+// in sw.js
+this.addEventListener('fetch', event => {
+  event.respondWith(
+    <strong>caches.match(event.request)</strong>
+      .then(response => {
+      	return response || fetch(event.request)
+      })
+  );
+});
+</pre>
+<button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
+<pre><code id="swCodeCopy" hidden></code></pre>
+
+<p>The <code>caches.match</code> accepts <a href="https://developer.mozilla.org/en-US/docs/Web/API/CacheStorage/match#Parameters">additional options</a> to refine matching.</p>
+<p>The service worker intercepts requests before they reach the browser and server cache.</p>
+<p>When you serve content from the cache you are also responsible for invalidating the cache.</p>
+
+<h3>Output</h3>
+<pre id="output"></pre><a href="../#reset">Reset all</a>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js', { scope: './' })
+            .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); });
+    } else {
+        app.output('ServiceWorker is not supported');
+    }
+</script>
+</body>
+</html>

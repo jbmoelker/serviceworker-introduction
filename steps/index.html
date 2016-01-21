@@ -24,17 +24,41 @@
 <h2>Step-by-step</h2>
 <ol class="steps" start="0">
     <li><a href="00-introduction/">Introduction</a></li>
-    <li><a href="01-feature-detection">Feature detection</a></li>
-    <li><a href="02-register-sw">Register Service Worker</a></li>
-    <li><a href="03-unregister-sw">Unregister Service Worker</a></li>
-    <li><a href="04-event-driven">Event Driven</a></li>
-    <li><a href="s05-cache-on-install">Cache on install</a></li>
+    <li><a href="01-feature-detection/">Feature detection</a></li>
+    <li><a href="02-register-sw/">Register Service Worker</a></li>
+    <li><a href="03-unregister-sw/">Unregister Service Worker</a></li>
+    <li><a href="04-event-driven/">Event Driven</a></li>
+    <li><a href="05-cache-on-install/">Cache on install</a></li>
+    <li><a href="06-hijack-fetch/">Hijack fetch</a></li>
+    <li><a href="07-serve-from-cache/">Serve from cache</a></li>
+    <li><a href="08-cache-on-fetch/">Cache on fetch</a></li>
+    <li><a href="09-clear-cache-on-activate/">Clear cache on activate</a></li>
 </ol>
 <style>
     .steps {
         list-style: decimal-leading-zero;
     }
 </style>
+
+<h2 id="reset">Reset</h2>
+<p>You can unregister all service workers and clear all caches by using the reset:</p>
+<button type="button" id="resetAll">Reset all</button>
+<pre id="output"></pre>
+
+<script src="assets/app.js"></script>
+<script>
+    (function(){
+        var scopes = Array.from(document.querySelectorAll('.steps a'))
+            .map(function(element) { return element.getAttribute('href'); });
+
+        if (/#reset$/.test(window.location.hash)) {
+            app.resetAll(scopes);
+        }
+        document.getElementById('resetAll').onclick = function() {
+            app.resetAll(scopes);
+        };
+    }());
+</script>
 
 </body>
 </html>

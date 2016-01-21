@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Service Worker Introduction</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+    <h1><a href="../">Service Worker Introduction</a></h1>
+    <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Cache on fetch</h2>
+<p>If no <a href="https://developer.mozilla.org/en-US/docs/Web/API/Cache/match">match</a> is found in the cache, we can perform the fetch and store the response in the cache.
+This way, it will be available from cache the next time it's requested.</p>
+
+<h3>Code</h3>
+<pre>
+// in sw.js
+this.addEventListener('fetch', event => event.respondWith(
+  caches.match(event.request).then(response => {
+    return response || fetch(event.request).then(response => {
+      return caches.open('app-v1').then(cache => {
+        <strong>cache.put(event.request, response.clone());</strong>
+        return response;
+      });
+    });
+  })
+});
+
+</pre>
+<button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
+<pre><code id="swCodeCopy" hidden></code></pre>
+
+<p>Note that we need to clone the response because the response (and request) body can only be consumed once.</p>
+
+<h3>Output</h3>
+<pre id="output"></pre><a href="../#reset">Reset all</a>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js', { scope: './' })
+            .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); });
+    } else {
+        app.output('ServiceWorker is not supported');
+    }
+</script>
+</body>
+</html>

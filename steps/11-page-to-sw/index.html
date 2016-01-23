@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Service Worker Introduction</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+    <h1><a href="../">Service Worker Introduction</a></h1>
+    <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Page to Service Worker</h2>
+<p>A page can communicate with the Service Worker its controlled by, by sending messages.
+The page can access that Service Worker via <a href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/controller"><code>navigator.serviceWorker.controller</code></a>
+and use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Client/postMessage"><code>postMessage()</code></a> to send a message it.</p>
+
+<h3>Code</h3>
+<pre>
+// in page.html
+navigator.<strong>serviceWorker.controller.postMessage</strong>({'hello':'world'});
+</pre>
+<button type="button" id="toggleCode">show/hide full page code (ES5)</button>
+<pre><code id="codeCopy" hidden></code></pre>
+
+<pre>
+// in sw.js
+this.addEventListener(<strong>'message'</strong>, event => {
+  console.log(event.data); // outputs {'hello':'world'}
+});
+</pre>
+<button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
+<pre><code id="swCodeCopy" hidden></code></pre>
+
+<p>Note: the Service Worker needs to be activated to take control of the page. So you may need to refresh this page first.</p>
+
+<h3>Output</h3>
+<pre id="output"></pre><a href="../#reset">Reset all</a>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+    (function(){
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js', { scope: './' })
+                .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); })
+                .then(navigator.serviceWorker.ready)
+                .then(sendMessage)
+                .catch(function(err) {
+                    app.output('error registering sw (see console)');
+                    console.error('error registering sw', err);
+                });
+        } else {
+            app.output('ServiceWorker is not supported');
+        }
+
+        function sendMessage() {
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({'hello':'world'});
+                app.output('message sent to sw (check its console)');
+            } else {
+                app.output('page not controlled by sw. try page refresh.');
+            }
+        }
+
+    }());
+</script>
+</body>
+</html>

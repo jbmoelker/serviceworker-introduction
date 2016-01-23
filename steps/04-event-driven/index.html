@@ -24,6 +24,7 @@ this.addEventListener(<strong>'install'</strong>, event => console.log('installe
 this.addEventListener(<strong>'activate'</strong>, event => console.log('activated', event));
 this.addEventListener(<strong>'fetch'</strong>, event => console.log('fetching', event));
 this.addEventListener(<strong>'push'</strong>, event => console.log('pushed', event));
+this.addEventListener(<strong>'message'</strong>, event => console.log('message received', event));
 </pre>
 <!--
 <button type="button" id="toggleCode">show/hide full ES5 code</button>
@@ -75,6 +76,10 @@ this<strong>.onfetch</strong> = event => {
   console.log('fetching', event, event.request);
 };
 </pre>
+
+<h3>The <code>message</code> event</h3>
+<p>A Service Worker can communicate with the pages it controls through messaging.
+  See step <a href="../11-page-to-sw/">Page to Service Worker</a> for an example and more details.</p>
 
 <h3>Wait for it…</h3>
 <p>If something needs to happen during a specific lifecycle event (<code>install</code> or <code>activate</code>) you can extend the lifetime of the event using <a href="https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/waitUntil"><code>waitUntil</code></a>.</p>

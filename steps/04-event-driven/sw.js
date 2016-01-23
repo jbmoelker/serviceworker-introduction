@@ -14,3 +14,6 @@ this.addEventListener('fetch', function(event) {
 this.addEventListener('push', function(event) {
 	console.log('pushed', event);
 });
+this.addEventListener('message', function(event) {
+	console.log('message received', event);
+});

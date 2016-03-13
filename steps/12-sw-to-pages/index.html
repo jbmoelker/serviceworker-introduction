@@ -13,31 +13,32 @@
     <p>Step-by-step introduction to the Service Worker API.</p>
 </header>
 
-<h2>Page to Service Worker</h2>
-<p>A page can communicate with the Service Worker its controlled by, by sending messages.
-The page can access that Service Worker via <a href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerContainer/controller"><code>navigator.serviceWorker.controller</code></a>
-and use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Client/postMessage"><code>postMessage()</code></a> to send a message it.</p>
+<h2>Service Worker to pages</h2>
+<p>A Service Worker can control many pages at the same time. From within the Service Worker
+you can <a href="https://developer.mozilla.org/en-US/docs/Web/API/Clients/matchAll">list all connected clients</a> (which include our pages) and send them a message.
+However this is only suitable when you want to broadcast a message to all of them.</p>
 
 <h3>Code</h3>
-<pre>
-// in page.html
-navigator.<strong>serviceWorker.controller.postMessage</strong>({'hello':'world'});
-</pre>
-<button type="button" id="toggleCode">show/hide full page code (ES5)</button>
-<pre><code id="codeCopy" hidden></code></pre>
 
 <pre>
 // in sw.js
-this.addEventListener(<strong>'message'</strong>, event => {
-  console.log(event.data); // outputs {'hello':'world'}
+this.clients.matchAll().then(clients => {
+  clients.forEach(client => <strong>client.postMessage</strong>('hello from the other side'));
 });
 </pre>
 <button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
 <pre><code id="swCodeCopy" hidden></code></pre>
 
-<p>Note: the Service Worker needs to be activated to take control of the page. So you may need to refresh this page first.</p>
+<pre>
+// in page.html
+window.addEventListener(<strong>'message'</strong>, event => { console.log(event.data) }, false);
+</pre>
+<button type="button" id="toggleCode">show/hide full page code (ES5)</button>
+<pre><code id="codeCopy" hidden></code></pre>
 
-<h4>Send your own message</h4>
+<p>The Service Worker will broadcast a message when receiving a push or message.
+Emulate a push (via the DevTools > Resources > Service Workers > bell icon) or
+trigger a message via this button:</p>
 <form id="messageForm">
     <input type="text" name="message">
     <button type="submit">Send message</button>
@@ -50,6 +51,10 @@ this.addEventListener(<strong>'message'</strong>, event => {
 <script id="codeSource">
     (function(){
 
+        navigator.serviceWorker.addEventListener('message', function(event){
+            app.output('message from sw: ' + event.data);
+        }, false);
+
         var messageForm = document.getElementById('messageForm');
         messageForm.onsubmit = function(event) {
             event.preventDefault();
@@ -58,13 +63,13 @@ this.addEventListener(<strong>'message'</strong>, event => {
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js', { scope: './' })
-                .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); })
-                .then(navigator.serviceWorker.ready)
-                .then(function(){ sendMessage({'hello':'world'}) })
-                .catch(function(err) {
-                    app.output('error registering sw (see console)');
-                    console.error('error registering sw', err);
-                });
+                    .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); })
+                    .then(navigator.serviceWorker.ready)
+                    .then(function(){ sendMessage({'hello':'world'}) })
+                    .catch(function(err) {
+                        app.output('error registering sw (see console)');
+                        console.error('error registering sw', err);
+                    });
         } else {
             app.output('ServiceWorker is not supported');
         }

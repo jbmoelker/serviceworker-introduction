@@ -14,5 +14,40 @@
 </header>
 
 <h2>Clear cache on activate</h2>
+<p>If our cached responses are outdated (for example our CSS changed), we can update our Service Worker and <a href="https://developer.mozilla.org/en-US/docs/Web/API/Cache/delete">delete</a> old caches on activation. Do make sure to exclude the new cache added on installation (just before the activation).</p>
+
+<h3>Code</h3>
+<pre>
+// in sw.js
+const currentCacheName = 'app-v2';
+this.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames
+          .filter(cacheName => (cacheName.startsWith('app-'))
+          .filter(cacheName => (cacheName !== currentCacheName))
+          .map(cacheName => <strong>caches.delete(cacheName)</strong>)
+      );
+    })
+  );
+});
+</pre>
+<button type="button" id="toggleSwCode" disabled>show/hide full SW.js code (ES5)</button> (not implemented yet)
+<pre><code id="swCodeCopy" hidden></code></pre>
+
+<h3>Output</h3>
+<pre id="output"></pre><a href="../#reset">Reset all</a>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js', { scope: './' })
+            .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); });
+    } else {
+        app.output('ServiceWorker is not supported');
+    }
+</script>
+
 </body>
 </html>

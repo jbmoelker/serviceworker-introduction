@@ -14,5 +14,45 @@
 </header>
 
 <h2>Offline with fallback</h2>
+<p>As the Service Worker sits between the page and the network, we can also serve a fallback page when fetching it from the server fails. We do have to make sure to only serve a fallback HTML page when the request is a GET HTML request.</p>
+
+<h3>Code</h3>
+<pre>
+// in sw.js
+this.addEventListener('fetch', event => {
+  event.respondWith(
+    fetch(event.request)<strong>.catch(fallback)</strong>
+  );
+
+  function fallback() {
+    if (isGetHtmlRequest(event.request)) {
+      return <strong>caches.match('/fallback.html')</strong>
+    }
+  }
+});
+
+function isGetHtmlRequest(request) {
+  return (
+    request.method === 'GET' &&
+    request.headers.get('Accept').contains('text/html')
+  );
+}
+</pre>
+<button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
+<pre><code id="swCodeCopy" hidden></code></pre>
+
+<h3>Output</h3>
+<pre id="output"></pre><a href="../#reset">Reset all</a>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js', { scope: './' })
+            .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); });
+    } else {
+        app.output('ServiceWorker is not supported');
+    }
+</script>
+
 </body>
 </html>

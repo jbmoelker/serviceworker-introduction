@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Service Worker Introduction</title>
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/png" href="../assets/favicon.png">
+    <link rel="stylesheet" href="../assets/app.css">
+</head>
+<body>
+<header>
+    <h1><a href="../">Service Worker Introduction</a></h1>
+    <p>Step-by-step introduction to the Service Worker API.</p>
+</header>
+
+<h2>Private messaging</h2>
+<p>In order for a Service Worker to message only with a specific page, we can use a <a href="https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel">message channel</a>.</p>
+
+<h3>Code</h3>
+<pre>
+// in page.html
+const messageChannel = <strong>new MessageChannel()</strong>;
+<strong>messageChannel.port1</strong>.onmessage = event => { console.log('msg from SW', event); }
+navigator.serviceWorker.controller.postMessage(message, [<strong>messageChannel.port2</strong>]);
+</pre>
+<button type="button" id="toggleCode">show/hide full page code (ES5)</button>
+<pre><code id="codeCopy" hidden></code></pre>
+
+<pre>
+// in sw.js
+this.addEventListener('message', event => {
+  // do something
+  <strong>event.ports[0]</strong>.postMessage('private msg back');
+});
+</pre>
+<button type="button" id="toggleSwCode">show/hide full SW.js code (ES5)</button>
+<pre><code id="swCodeCopy" hidden></code></pre>
+
+<h3>Output</h3>
+<pre id="output"></pre><a href="../#reset">Reset all</a>
+
+<h4>Send your own message</h4>
+<p>The Service Worker will reply in Pig Latin.</p>
+<form id="messageForm">
+    <input type="text" name="message">
+    <button type="submit">Send message</button>
+</form>
+
+<script src="../assets/app.js"></script>
+<script id="codeSource">
+    (function(){
+
+        var messageForm = document.getElementById('messageForm');
+        messageForm.onsubmit = function(event) {
+            event.preventDefault();
+            sendMessage(messageForm.message.value);
+        };
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js', { scope: './' })
+                .then(function(reg) { app.output('registered sw scoped to ' + reg.scope); })
+                .catch(function(err) {
+                    app.output('error registering sw (see console)');
+                    console.error('error registering sw', err);
+                });
+        } else {
+            app.output('ServiceWorker is not supported');
+        }
+
+        function sendMessage(message) {
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage(message);
+                app.output('message sent to sw (check its console)');
+            } else {
+                app.output('page not controlled by sw. try page refresh.');
+            }
+        }
+    }());
+</script>
+</body>
+</html>

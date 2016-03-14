@@ -25,7 +25,7 @@ this.addEventListener('activate', event => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames
-          .filter(cacheName => (cacheName.startsWith('app-'))
+          .filter(cacheName => (cacheName.startsWith('app-')))
           .filter(cacheName => (cacheName !== currentCacheName))
           .map(cacheName => <strong>caches.delete(cacheName)</strong>)
       );
